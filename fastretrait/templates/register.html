@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Inscription | Plateforme Fast-N-egyptien
-Nati{% endblock %}
+{% block title %}Inscription | Plateforme Fast-Nati{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
         <h3 class="text-center mb-4">Formulaire d'inscription</h3>
+        {% if erreur %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endif %}
         <form id="registerForm" action="{% url 'inscription' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row mb-3">

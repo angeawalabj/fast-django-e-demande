@@ -3,10 +3,8 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.core import mail
 from .models import Etudiant, Demande, Admin, PasswordResetToken
-from datetime import datetime, timedelta
-from django.utils import timezone
 import uuid
-import os
+from django.test.utils import override_settings
 
 class FastRetraitTests(TestCase):
     def setUp(self):
@@ -69,6 +67,7 @@ class FastRetraitTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Adresse e-mail invalide')
 
+    @override_settings(AUTHENTICATION_BACKENDS=['django.contrib.auth.backends.ModelBackend'])
     def test_login_success(self):
         response = self.client.post(reverse('connecter'), {
             'email': self.user_data['email'],
@@ -76,6 +75,7 @@ class FastRetraitTests(TestCase):
         })
         self.assertRedirects(response, reverse('dashboard'))
 
+    @override_settings(AUTHENTICATION_BACKENDS=['django.contrib.auth.backends.ModelBackend'])
     def test_login_invalid_credentials(self):
         response = self.client.post(reverse('connecter'), {
             'email': self.user_data['email'],
@@ -84,6 +84,7 @@ class FastRetraitTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Nom d\'utilisateur ou mot de passe incorrect')
 
+    @override_settings(AUTHENTICATION_BACKENDS=['django.contrib.auth.backends.ModelBackend'])
     def test_create_demande(self):
         self.client.login(username=self.user_data['email'], password=self.user_data['password'])
         response = self.client.post(reverse('demande'), {
@@ -95,11 +96,13 @@ class FastRetraitTests(TestCase):
         self.assertRedirects(response, reverse('dashboard'))
         self.assertTrue(Demande.objects.filter(etudiant=self.etudiant, types='attestation').exists())
 
+    @override_settings(AUTHENTICATION_BACKENDS=['django.contrib.auth.backends.ModelBackend'])
     def test_admin_dashboard_access(self):
         self.client.login(username='admin@example.com', password='adminpass')
         response = self.client.get(reverse('admin_dashboard'))
         self.assertEqual(response.status_code, 200)
 
+    @override_settings(AUTHENTICATION_BACKENDS=['django.contrib.auth.backends.ModelBackend'])
     def test_admin_dashboard_no_access(self):
         self.client.login(username=self.user_data['email'], password=self.user_data['password'])
         response = self.client.get(reverse('admin_dashboard'))

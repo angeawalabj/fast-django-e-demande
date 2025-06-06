@@ -4,6 +4,11 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <h3 class="text-center mb-4">Page de Connexion</h3>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
         <form id="loginForm" action="{% url 'connecter' %}" method="post">
             {% csrf_token %}
             <div class="mb-3">

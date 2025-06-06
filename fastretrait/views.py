@@ -6,7 +6,12 @@ from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 import re
-from .models import Etudiant, Demande, Message, Admin
+from .models import Etudiant, Demande, Message, Admin, PasswordResetToken
+from uuid import UUID
+from datetime import timedelta
+from django.utils import timezone
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 def inscription(request):
     erreur = False
@@ -62,22 +67,16 @@ def inscription(request):
     return render(request, 'register.html', context)
 
 def connexion(request):
-    erreur = False
-    message = ''
     if request.method == 'POST':
-        username = request.POST.get('email', None)
-        password = request.POST.get('password', None)
-        user = authenticate(username=username, password=password)
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+        user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
-            if Admin.objects.filter(user=user).exists():
-                return redirect('admin_dashboard')
             return redirect('dashboard')
         else:
-            erreur = True
-            message = 'Nom d\'utilisateur ou mot de passe incorrect.'
-    context = {'erreur': erreur, 'message': message}
-    return render(request, 'login.html', context)
+            messages.error(request, "Nom d'utilisateur ou mot de passe incorrect")
+    return render(request, 'login.html', {})
 
 @login_required(login_url='connecter')
 def dashboard(request):
@@ -176,15 +175,32 @@ def contact(request):
     context = {'ok': ok, 'message': message}
     return render(request, 'contact.html', context)
 
+
 def recuperation(request):
     erreur = False
     message = ''
     ok = False
     if request.method == 'POST':
-        email = request.POST.get('email', None)
+        email = request.POST.get('email', '').strip()
         user = User.objects.filter(email=email).first()
         if user:
-            # TODO: Implémenter la logique de réinitialisation de mot de passe
+            token = PasswordResetToken.objects.create(
+                user=user,
+                expires_at=timezone.now() + timedelta(hours=1)
+            )
+            reset_link = f"http://{request.get_host()}/reset/{token.token}/"
+            email_body = render_to_string('reset_password_email.html', {
+                'user': user,
+                'reset_link': reset_link,
+            })
+            send_mail(
+                subject='Réinitialisation de votre mot de passe',
+                message='',
+                from_email='from@example.com',  # Remplace par DEFAULT_FROM_EMAIL
+                recipient_list=[email],
+                html_message=email_body,
+                fail_silently=False,
+            )
             message = 'Un email de récupération a été envoyé.'
             ok = True
         else:
@@ -205,3 +221,29 @@ def profil(request):
 
 def home(request):
     return render(request, 'accueil.html')
+
+def reset_password(request, token):
+    try:
+        token_obj = PasswordResetToken.objects.get(token=token)
+        if not token_obj.is_valid():
+            messages.error(request, 'Ce lien de réinitialisation est expiré.')
+            return redirect('connecter')
+    except PasswordResetToken.DoesNotExist:
+        messages.error(request, 'Lien de réinitialisation invalide.')
+        return redirect('connecter')
+
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        repassword = request.POST.get('repassword')
+        if password != repassword:
+            messages.error(request, 'Les mots de passe ne correspondent pas.')
+        elif len(password) < 6:
+            messages.error(request, 'Le mot de passe doit contenir au moins 6 caractères.')
+        else:
+            user = token_obj.user
+            user.set_password(password)
+            user.save()
+            token_obj.delete()
+            messages.success(request, 'Mot de passe réinitialisé avec succès. Veuillez vous connecter.')
+            return redirect('connecter')
+    return render(request, 'reset_password.html', {'token': token})
