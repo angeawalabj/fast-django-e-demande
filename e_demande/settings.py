@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from django.contrib.messages import constants as messages
+
 
 # Charger les variables d'environnement depuis .env
 load_dotenv()
@@ -73,6 +75,12 @@ AXES_COOLOFF_TIME = int(os.getenv('AXES_COOLOFF_TIME', 1))  # 1 heure de blocage
 AXES_LOCKOUT_TEMPLATE = 'lockout.html'  # Template pour les blocages
 AXES_RESET_ON_SUCCESS = True  # Réinitialiser les échecs après une connexion réussie
 
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+    messages.SUCCESS: 'success',
+    messages.INFO: 'info',
+    messages.WARNING: 'warning',
+}
 
 TEMPLATES = [
     {

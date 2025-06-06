@@ -75,14 +75,18 @@ class FastRetraitTests(TestCase):
         })
         self.assertRedirects(response, reverse('dashboard'))
 
-    @override_settings(AUTHENTICATION_BACKENDS=['django.contrib.auth.backends.ModelBackend'])
+    @override_settings(
+        AUTHENTICATION_BACKENDS=['django.contrib.auth.backends.ModelBackend'],
+        AXES_ENABLED=False
+    )
     def test_login_invalid_credentials(self):
-        response = self.client.post(reverse('connecter'), {
-            'email': self.user_data['email'],
-            'password': 'wrongpassword'
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Nom d\'utilisateur ou mot de passe incorrect')
+            response = self.client.post(reverse('connecter'), {
+                'email': self.user_data['email'],
+                'password': 'wrongpassword'
+            })
+            print(response.content.decode())  # Débogage temporaire
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "Nom d'utilisateur ou mot de passe incorrect")
 
     @override_settings(AUTHENTICATION_BACKENDS=['django.contrib.auth.backends.ModelBackend'])
     def test_create_demande(self):
