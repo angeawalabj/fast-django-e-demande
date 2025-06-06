@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Demande d'Attestation | Plateforme Fast-Nati{% endblock %}
+{% block content %}
+<h1 class="text-center mb-4">Demande d'Attestation ou Diplôme</h1>
+{% if erreur %}
+    <div class="alert alert-danger">{{ erreur }}</div>
+{% endif %}
+<div class="row">
+    <div class="col-md-6">
+        <form id="requestForm" action="{% url 'demande' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="type_document" class="form-label"><i class="fas fa-file-alt"></i> Type de Document</label>
+                <select class="form-select" id="type_document" name="type_document" required>
+                    <option value="" disabled selected>Choisissez le type de document</option>
+                    <option value="attestation">Attestation</option>
+                    <option value="diplome">Diplôme</option>
+                </select>
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+                <label for="filiere" class="form-label"><i class="fas fa-comment"></i> Filière et Année d'étude</label>
+                <input type="text" class="form-control" id="filiere" name="filiere" placeholder="MI2, PC2, MI3, P3, C3" required>
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+                <label for="obtention" class="form-label"><i class="fas fa-file"></i> Année d'Obtention</label>
+                <input type="text" class="form-control" id="obtention" name="obtention" placeholder="Ex: 2022-2023" required>
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+                <label for="quittance" class="form-label"><i class="fas fa-file"></i> Votre Quittance (Optionnel)</label>
+                <input type="file" class="form-control" id="quittance" name="quittance" accept="application/pdf,image/*">
+            </div>
+            <div class="mb-3">
+                <label for="carte_et" class="form-label"><i class="fas fa-file"></i> Votre Carte d'étudiant (Optionnel)</label>
+                <input type="file" class="form-control" id="carte_et" name="carte_et" accept="application/pdf,image/*">
+            </div>
+            <button type="submit" class="btn btn-primary w-100" data-original-text="Envoyer la Demande">Envoyer la Demande</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <h4>Instructions</h4>
+        <ul class="list-disc ps-4">
+            <li>Remplissez le formulaire en choisissant le type de document et en suivant le format des exemples donnés.</li>
+            <li>Vous pouvez joindre un fichier si nécessaire (formats acceptés : PDF, image).</li>
+            <li>Cliquez sur "Envoyer la Demande" pour soumettre votre requête.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Contact | Plateforme Fast-Nati{% endblock %}
+{% block content %}
+<h1 class="text-center mb-4">Nous Contacter</h1>
+<div class="row">
+    <div class="col-md-6">
+        <form id="contactForm" action="{% url 'contact' %}" method="post">
+            {% csrf_token %}
+            {% if ok %}
+                <div class="vert">Message envoyé avec succès <br/>
+                    <a href="{% url 'dashboard' %}"><i class="fas fa-dashboard" aria-hidden="true"></i> Retour à la page d'accueil</a>
+                </div>
+            {% endif %}
+            <div class="mb-3">
+                <label for="nom" class="form-label"><i class="fas fa-user"></i> Nom</label>
+                <input type="text" class="form-control" id="nom" name="nom" placeholder="Votre nom" required>
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label"><i class="fas fa-envelope"></i> Adresse Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Votre adresse email" required>
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+                <label for="sujet" class="form-label"><i class="fas fa-heading"></i> Sujet</label>
+                <input type="text" class="form-control" id="sujet" name="sujet" placeholder="Sujet du message" required>
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+                <label for="message" class="form-label"><i class="fas fa-comment"></i> Message</label>
+                <textarea class="form-control" id="message" name="message" rows="5" placeholder="Votre message" required></textarea>
+                <div class="invalid-feedback"></div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" data-original-text="Envoyer">Envoyer</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <h4>Coordonnées</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Avenue de la Paix, Natitingou, Benin</p>
+        <p><i class="fas fa-phone"></i> Téléphone: +229 1234 5678</p>
+        <p><i class="fas fa-envelope"></i> Email: info@fast-nati.com</p>
+        <h4>Suivez-nous</h4>
+        <p>
+            <a href="#" class="text-decoration-none"><i class="fab fa-facebook"></i> Facebook</a><br>
+            <a href="#" class="text-decoration-none"><i class="fab fa-twitter"></i> Twitter</a><br>
+            <a href="#" class="text-decoration-none"><i class="fab fa-instagram"></i> Instagram</a><br>
+            <a href="#" class="text-decoration-none"><i class="fab fa-linkedin"></i> LinkedIn</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

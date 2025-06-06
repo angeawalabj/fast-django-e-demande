@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Récupération de Mot de Passe | Plateforme Fast-Nati{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1 class="text-center mb-4">Récupération de Mot de Passe</h1>
+        <form id="recoverForm" action="{% url 'recuperation' %}" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="email" class="form-label"><i class="fas fa-envelope"></i> Adresse E-mail</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Votre adresse e-mail" required>
+                <div class="invalid-feedback"></div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" data-original-text="Envoyer le lien de récupération">Envoyer le lien de récupération</button>
+        </form>
+        <p class="text-center mt-3"><a href="{% url 'connecter' %}" class="text-primary">Retourner à la page de connexion</a></p>
+    </div>
+</div>
+{% endblock %}

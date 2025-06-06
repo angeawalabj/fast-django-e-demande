@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Profil | Plateforme Fast-Nati{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h3 class="text-center mb-4">Votre Profil</h3>
+        <div class="card">
+            <div class="card-body">
+                <p><strong>Nom :</strong> {{ etudiant.nom }}</p>
+                <p><strong>Prénom :</strong> {{ etudiant.prenom }}</p>
+                <p><strong>Email :</strong> {{ etudiant.email }}</p>
+                <p><strong>Matricule :</strong> {{ etudiant.matricule }}</p>
+                <p><strong>Téléphone :</strong> {{ etudiant.telephone }}</p>
+            </div>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn btn-primary w-100 mt-3">Retour au tableau de bord</a>
+    </div>
+</div>
+{% endblock %}

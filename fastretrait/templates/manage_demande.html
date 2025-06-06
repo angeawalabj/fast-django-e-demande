@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Gérer la demande | Plateforme Fast-Nati{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h3 class="text-center mb-4">Gérer la demande</h3>
+        <div class="card">
+            <div class="card-body">
+                <p><strong>Étudiant :</strong> {{ demande.etudiant }}</p>
+                <p><strong>Type :</strong> {{ demande.types }}</p>
+                <p><strong>Date :</strong> {{ demande.date }}</p>
+                <p><strong>Filière :</strong> {{ demande.filiere }}</p>
+                <p><strong>Année d'obtention :</strong> {{ demande.annee_d_obtention }}</p>
+                <p><strong>Statut :</strong> {{ demande.status }}</p>
+                {% if demande.quittance %}
+                    <p><strong>Quittance :</strong> <a href="{{ demande.quittance.url }}" target="_blank">Voir le fichier</a></p>
+                {% endif %}
+                {% if demande.carte_etudiant %}
+                    <p><strong>Carte étudiant :</strong> <a href="{{ demande.carte_etudiant.url }}" target="_blank">Voir le fichier</a></p>
+                {% endif %}
+            </div>
+        </div>
+        <form action="{% url 'manage_demande' demande.id %}" method="post" class="mt-3">
+            {% csrf_token %}
+            <div class="d-flex justify-content-between">
+                <button type="submit" name="action" value="accepter" class="btn btn-success w-45">Accepter</button>
+                <button type="submit" name="action" value="rejeter" class="btn btn-danger w-45">Rejeter</button>
+            </div>
+        </form>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-primary w-100 mt-3">Retour au tableau de bord</a>
+    </div>
+</div>
+{% endblock %}
