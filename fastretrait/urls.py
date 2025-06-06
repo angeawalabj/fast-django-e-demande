@@ -14,5 +14,4 @@ urlpatterns = [
     path('logout', views.log_out, name="log_out"),
     path('contacter', views.contact, name='contact'),
     path('profil', views.profil, name='profil'),
-    path('reset/<uuid:token>/', views.reset_password, name='reset_password'),
 ]

@@ -67,6 +67,7 @@ def inscription(request):
     return render(request, 'register.html', context)
 
 def connexion(request):
+    context = {}
     if request.method == 'POST':
         email = request.POST.get('email', '').strip()
         password = request.POST.get('password', '')
@@ -76,7 +77,8 @@ def connexion(request):
             return redirect('dashboard')
         else:
             messages.error(request, "Nom d'utilisateur ou mot de passe incorrect")
-    return render(request, 'login.html', {})
+            context['error'] = True
+    return render(request, 'login.html', context)
 
 @login_required(login_url='connecter')
 def dashboard(request):
